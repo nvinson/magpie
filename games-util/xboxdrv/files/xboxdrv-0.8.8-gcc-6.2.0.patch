@@ -1,0 +1,13 @@
+--- xboxdrv-linux-0.8.8/src/controller_slot.cpp.old	2016-12-11 19:10:55.737191747 -0800
++++ xboxdrv-linux-0.8.8/src/controller_slot.cpp	2016-12-11 19:16:59.297850944 -0800
+@@ -67,9 +67,9 @@ ControllerSlot::disconnect()
+ }
+ 
+ bool
+ ControllerSlot::is_connected() const
+ {
+-  return m_thread;
++  return (bool) m_thread;
+ }
+ 
+ /* EOF */
