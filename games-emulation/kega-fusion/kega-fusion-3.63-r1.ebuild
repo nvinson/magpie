@@ -82,6 +82,6 @@ pkg_postinst() {
 
 		elog "Additional graphics filters are available."
 		elog "To use them, copy the filters from "
-		elog "${ED%/}/usr/share/${PN}/plugins to "
+		elog "/usr/share/${PN}/plugins to "
 		elog "~/.Kega Fusion/Plugins."
 }
