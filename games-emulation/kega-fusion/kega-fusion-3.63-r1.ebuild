@@ -1,4 +1,7 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 2017 Nicholas Vinson
+# Distributed under the terms of the GNU General Public License v2
+
+# Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
