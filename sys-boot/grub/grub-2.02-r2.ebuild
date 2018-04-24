@@ -1,41 +1,22 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
 
-if [[ ${PV} == 9999  ]]; then
-	GRUB_AUTOGEN=1
-fi
+GRUB_AUTOGEN=1
+PYTHON_COMPAT=( python{2_7,3_3,3_4,3_5} )
+WANT_LIBTOOL=none
 
-if [[ -n ${GRUB_AUTOGEN} ]]; then
-	PYTHON_COMPAT=( python{2_7,3_3,3_4,3_5} )
-	WANT_LIBTOOL=none
-	inherit autotools python-any-r1
-fi
+inherit autotools bash-completion-r1 flag-o-matic git-r3 multibuild pax-utils
+inherit python-any-r1 toolchain-funcs versionator
 
-inherit autotools bash-completion-r1 flag-o-matic multibuild pax-utils toolchain-funcs versionator
-
-if [[ ${PV} != 9999 ]]; then
-	if [[ ${PV} == *_alpha* || ${PV} == *_beta* || ${PV} == *_rc* ]]; then
-		# The quote style is to work with <=bash-4.2 and >=bash-4.3 #503860
-		MY_P=${P/_/'~'}
-		SRC_URI="mirror://gnu-alpha/${PN}/${MY_P}.tar.xz"
-		S=${WORKDIR}/${MY_P}
-	else
-		SRC_URI="mirror://gnu/${PN}/${P}.tar.xz"
-		S=${WORKDIR}/${P%_*}
-	fi
-	KEYWORDS="~amd64 ~arm64 ~x86"
-else
-	inherit git-r3
-	EGIT_REPO_URI="git://git.sv.gnu.org/grub.git
-		http://git.savannah.gnu.org/r/grub.git"
-fi
+EGIT_REPO_URI="https://git.savannah.gnu.org/r/grub.git"
+EGIT_COMMIT=51be3372ec8ba07ef68a409956ea0eefa89fe7c5
+KEYWORDS="~amd64 ~arm64 ~x86"
 
 PATCHES=(
 	"${FILESDIR}"/gfxpayload.patch
 	"${FILESDIR}"/grub-2.02_beta2-KERNEL_GLOBS.patch
-	"${FILESDIR}"/2.02_beta3-part-uuid.patch
 )
 
 DEJAVU=dejavu-sans-ttf-2.37
@@ -71,7 +52,7 @@ RDEPEND="
 	)
 	device-mapper? ( >=sys-fs/lvm2-2.02.45 )
 	libzfs? ( sys-fs/zfs )
-	mount? ( sys-fs/fuse )
+	mount? ( sys-fs/fuse:* )
 	truetype? ( media-libs/freetype:2= )
 	ppc? ( sys-apps/ibm-powerpc-utils sys-apps/powerpc-utils )
 	ppc64? ( sys-apps/ibm-powerpc-utils sys-apps/powerpc-utils )
@@ -127,9 +108,7 @@ QA_WX_LOAD="usr/lib/grub/*"
 QA_MULTILIB_PATHS="usr/lib/grub/.*"
 
 src_unpack() {
-	if [[ ${PV} == 9999 ]]; then
-		git-r3_src_unpack
-	fi
+	git-r3_src_unpack
 	default
 }
 

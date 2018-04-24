@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 #
@@ -61,7 +61,7 @@ GRUB_DISTRIBUTOR="Gentoo"
 
 # Uncomment if you want GRUB to pass "root=PARTUUID=xxx" parameter to the
 # kernel.  Setting is ignored if initramfs is detected.
-GRUB_ENABLE_LINUX_PARTUUID=true
+GRUB_DISABLE_LINUX_PARTUUID=false
 
 # Uncomment to disable generation of recovery mode menu entries
 #GRUB_DISABLE_RECOVERY=true
