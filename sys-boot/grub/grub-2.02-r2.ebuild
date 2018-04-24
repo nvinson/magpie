@@ -256,7 +256,7 @@ src_install() {
 	fi
 
 	insinto /etc/default
-	newins "${FILESDIR}"/grub.default-4 grub
+	newins "${FILESDIR}"/grub.default-5 grub
 }
 
 pkg_postinst() {
