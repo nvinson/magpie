@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="6"
@@ -8,9 +8,8 @@ HOMEPAGE="http://wgetpaste.zlin.dk/"
 
 inherit git-r3
 
-EGIT_COMMIT=5ac97f50d2d80c01641c9925d4447efc2bfdeb97
-EGIT_REPO_URI="git://github.com/nvinson/${PN}"
-#SRC_URI="https://github.com/nvinson/${PN}/archive/${EGIT_COMMIT}.tar.gz -> ${P}.tar.gz"
+EGIT_COMMIT=c0f3648a18ae368fbc53c71c65e5a5ef737047cf
+EGIT_REPO_URI="https://github.com/nvinson/${PN}"
 
 LICENSE="public-domain"
 SLOT="0"
