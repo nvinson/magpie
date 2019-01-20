@@ -65,14 +65,16 @@ pkg_setup() {
 
 src_install() {
 		exeinto "/opt/bin"
-		newexe Fusion ${PN} || die "newexe failed"
+		newexe Fusion ${PN}
 
 		make_desktop_entry ${PN} "Kega Fusion"
-		doicon "${FILESDIR}/kega-fusion.png" || die
+		doicon "${FILESDIR}/kega-fusion.png"
 
-		dodir "/usr/share/${PN}/plugins"
-		tar xvf "${FILESDIR}/plugins.tar.xz" -C \
-			"${ED%/}/usr/share/${PN}/plugins" > /dev/null || die
+		insinto "/usr/share/${PN}"
+		doins -r "${FILESDIR}/plugins"
+		for p in "${ED%/}/usr/share/${PN}/plugins"/*.xz; do
+			xz -d "${p}" || die;
+		done
 }
 
 pkg_postinst() {
