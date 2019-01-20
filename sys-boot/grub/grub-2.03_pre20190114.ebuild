@@ -26,8 +26,6 @@ KEYWORDS="~amd64 ~arm64 ~ppc ~ppc64 ~x86"
 PATCHES=(
 	"${FILESDIR}"/gfxpayload.patch
 	"${FILESDIR}"/grub-2.02_beta2-KERNEL_GLOBS.patch
-	"${FILESDIR}"/2.02-freetype-capitalise-variables.patch
-	"${FILESDIR}"/2.02-freetype-pkg-config.patch
 )
 
 DEJAVU=dejavu-sans-ttf-2.37
