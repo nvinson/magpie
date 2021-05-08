@@ -6,9 +6,8 @@ EAPI="7"
 DESCRIPTION="Command-line interface to various pastebins"
 HOMEPAGE="http://wgetpaste.zlin.dk/"
 
-COMMIT="8bac25377cf2c447c439c04837ea178d6a0f845c"
-SRC_URI="https://github.com/zlin/${PN}/archive/${COMMIT}.tar.gz -> ${P}.tar.gz"
-S="${WORKDIR}/${PN}-${COMMIT}"
+SRC_URI="https://github.com/nvinson/${PN}/archive/refs/tags/${PV}.tar.gz -> ${P}.tar.gz"
+S="${WORKDIR}/${P}/"
 
 LICENSE="MIT"
 SLOT="0"
