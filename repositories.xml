@@ -2,13 +2,13 @@
 <!DOCTYPE repositories SYSTEM "/dtd/repositories.dtd">
 <repositories xmlns="" version="1.0">
   <repo status="unofficial">
-    <name><![CDATA[nuntoo]]></name>
-    <description><![CDATA[nuntoo experimental overlay]]></description>
+    <name><![CDATA[magpipe]]></name>
+    <description><![CDATA[magpipe repository]]></description>
     <homepage></homepage>
     <owner>
       <email></email>
       <name><![CDATA[Nicholas Vinson]]></name>
     </owner>
-    <source type="git">git://github.com/nvinson/nuntoo.git</source>
+    <source type="git">git://github.com/nvinson/magpipe.git</source>
   </repo>
 </repositories>
