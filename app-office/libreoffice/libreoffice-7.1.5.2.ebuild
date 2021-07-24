@@ -3,7 +3,7 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{7,8,9} )
+PYTHON_COMPAT=( python3_{8..10} )
 PYTHON_REQ_USE="threads(+),xml"
 
 MY_PV="${PV/_alpha/.alpha}"
@@ -177,7 +177,7 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	x11-libs/libXrandr
 	x11-libs/libXrender
 	accessibility? (
-		$(python_gen_cond_dep 'dev-python/lxml[${PYTHON_MULTI_USEDEP}]')
+		$(python_gen_cond_dep 'dev-python/lxml[${PYTHON_USEDEP}]')
 	)
 	bluetooth? (
 		dev-libs/glib:2
@@ -213,7 +213,7 @@ COMMON_DEPEND="${PYTHON_DEPS}
 		dev-libs/glib:2
 		dev-libs/gobject-introspection
 		gnome-base/dconf
-		media-libs/mesa[egl]
+		media-libs/mesa[egl(+)]
 		x11-libs/gtk+:3[X]
 		x11-libs/pango
 	)
@@ -271,8 +271,8 @@ RDEPEND="${COMMON_DEPEND}
 	media-fonts/liberation-fonts
 	|| ( x11-misc/xdg-utils kde-plasma/kde-cli-tools )
 	java? ( || (
-		>=dev-java/openjdk-11:*
-		>=dev-java/openjdk-jre-bin-11:*
+		dev-java/openjdk:11
+		dev-java/openjdk-jre-bin:11
 		>=virtual/jre-1.8
 	) )
 	kde? ( kde-frameworks/breeze-icons:* )
@@ -559,16 +559,10 @@ src_configure() {
 			--without-system-hsqldb
 			--with-ant-home="${ANT_HOME}"
 		)
-		if has_version ">=dev-java/openjdk-11"; then
-			local jvm=$(best_version dev-java/openjdk)
-			jvm=${jvm%%.*}
-			jvm=${jvm#*/}
-			myeconfargs+=( -with-jdk-home="${EPREFIX}/usr/$(get_libdir)/${jvm}" )
-		elif has_version ">=dev-java/openjdk-bin:11"; then
-			local jvm=$(best_version dev-java/openjdk-bin)
-			jvm=${jvm%%.*}
-			jvm=${jvm#*/}
-			myeconfargs+=( --with-jdk-home="/opt/${jvm}" )
+		if has_version "dev-java/openjdk:11"; then
+			myeconfargs+=( -with-jdk-home="${EPREFIX}/usr/$(get_libdir)/openjdk-11" )
+		elif has_version "dev-java/openjdk-bin:11"; then
+			myeconfargs+=( --with-jdk-home="/opt/openjdk-bin-11" )
 		fi
 
 		use libreoffice_extensions_scripting-beanshell && \
