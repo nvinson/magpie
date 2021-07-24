@@ -559,10 +559,8 @@ src_configure() {
 			--without-system-hsqldb
 			--with-ant-home="${ANT_HOME}"
 		)
-		if has_version "dev-java/openjdk:11"; then
-			myeconfargs+=( -with-jdk-home="${EPREFIX}/usr/$(get_libdir)/openjdk-11" )
-		elif has_version "dev-java/openjdk-bin:11"; then
-			myeconfargs+=( --with-jdk-home="/opt/openjdk-bin-11" )
+		if has_version ">=dev-java/openjdk-11" || has_version '>=dev-java/openjdk-bin-11'; then
+			myeconfargs+=( --with-jdk-home=$(java-config -g JDK_HOME) )
 		fi
 
 		use libreoffice_extensions_scripting-beanshell && \
