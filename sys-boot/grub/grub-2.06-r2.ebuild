@@ -1,4 +1,4 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -44,19 +44,21 @@ if [[ ${PV} != 9999 ]]; then
 		SRC_URI="mirror://gnu/${PN}/${P}.tar.xz"
 		S=${WORKDIR}/${P%_*}
 	fi
-	KEYWORDS="amd64 ~arm arm64 ~ia64 ppc ppc64 ~riscv sparc x86"
+	KEYWORDS="~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~riscv ~sparc ~x86"
 else
 	inherit git-r3
 	EGIT_REPO_URI="https://git.savannah.gnu.org/git/grub.git"
 fi
 
+SRC_URI+=" https://dev.gentoo.org/~floppym/dist/${P}-backports.tar.xz"
+
 PATCHES=(
-	"${FILESDIR}"/grub-2.06-xfs-v4.patch
+	"${WORKDIR}/${P}-backports"
 	"${FILESDIR}"/gfxpayload.patch
 	"${FILESDIR}"/grub-2.02_beta2-KERNEL_GLOBS.patch
 	"${FILESDIR}"/grub-2.06-test-words.patch
-	"${FILESDIR}"/grub-2.06-binutils-2.36.patch
 	"${FILESDIR}"/grub-2.06-clang-hardening.patch
+	"${FILESDIR}"/grub-2.06-falign.patch
 )
 
 DEJAVU=dejavu-sans-ttf-2.37
