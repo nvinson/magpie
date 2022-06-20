@@ -1,7 +1,7 @@
 # Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 inherit toolchain-funcs multilib-minimal flag-o-matic
 
@@ -25,11 +25,15 @@ DEPEND="kmod? ( sys-apps/kmod )
 RDEPEND="${DEPEND}
 	sys-apps/hwdata"
 # See bug #847133 re binutils check
-BDEPEND="sys-apps/which
-	|| ( >=sys-devel/binutils-2.37:* sys-devel/lld sys-devel/native-cctools )
+BDEPEND="|| ( >=sys-devel/binutils-2.37:* sys-devel/lld sys-devel/native-cctools )
 	kmod? ( virtual/pkgconfig )"
 
 MULTILIB_WRAPPED_HEADERS=( /usr/include/pci/config.h )
+
+PATCHES=(
+	"${FILESDIR}"/${PN}-3.8.0-no-which.patch
+	"${FILESDIR}"/${PN}-3.8.0-pkg-config.patch
+)
 
 switch_config() {
 	[[ $# -ne 2 ]] && return 1
