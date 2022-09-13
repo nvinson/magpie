@@ -1,9 +1,9 @@
 # Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
-PYTHON_COMPAT=( python3_{8,9,10} )
+PYTHON_COMPAT=( python3_{8..10} )
 inherit flag-o-matic meson-multilib udev python-any-r1
 
 DESCRIPTION="An interface for filesystems implemented in userspace"
@@ -14,7 +14,7 @@ LICENSE="GPL-2 LGPL-2.1"
 SLOT="3"
 KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
 IUSE="+suid test"
-RESTRICT="!test? ( test )"
+RESTRICT="!test? ( test ) test? ( userpriv )"
 
 BDEPEND="virtual/pkgconfig
 	test? (
@@ -26,11 +26,11 @@ RDEPEND=">=sys-fs/fuse-common-3.3.0-r1"
 DOCS=( AUTHORS ChangeLog.rst README.md doc/README.NFS doc/kernel.txt )
 
 python_check_deps() {
-	has_version -b "dev-python/pytest[${PYTHON_USEDEP}]"
+	python_has_version "dev-python/pytest[${PYTHON_USEDEP}]"
 }
 
 pkg_setup() {
-	use test && python_setup
+	use test && python-any-r1_pkg_setup
 }
 
 multilib_src_configure() {
@@ -45,9 +45,7 @@ multilib_src_configure() {
 }
 
 src_test() {
-	if [[ ${EUID} != 0 ]]; then
-		ewarn "Running as non-root user, skipping tests"
-	elif has sandbox ${FEATURES}; then
+	if has sandbox ${FEATURES}; then
 		ewarn "Sandbox enabled, skipping tests"
 	else
 		multilib-minimal_src_test
@@ -55,15 +53,13 @@ src_test() {
 }
 
 multilib_src_test() {
-	${EPYTHON} -m pytest test || die
+	epytest
 }
 
 multilib_src_install_all() {
-	# installed via fuse-common
+	# Installed via fuse-common
 	rm -r "${ED}"{/etc,$(get_udevdir)} || die
-
-	# init script location is hard-coded in install_helper.sh
-	rm -rf "${D}"/etc || die
+	rm -rf "${ED}"/etc || die
 
 	# useroot=false prevents the build system from doing this.
 	use suid && fperms u+s /usr/bin/fusermount3
