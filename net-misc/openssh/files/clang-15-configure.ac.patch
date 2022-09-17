@@ -1,0 +1,69 @@
+--- openssh-9.0p1/configure.ac.old	2022-09-11 07:54:39.811689117 -0400
++++ openssh-9.0p1/configure.ac	2022-09-11 08:01:37.372290557 -0400
+@@ -2151,10 +2151,11 @@ AC_CHECK_FUNCS([setresuid], [
+ 	AC_MSG_CHECKING([if setresuid seems to work])
+ 	AC_RUN_IFELSE(
+ 		[AC_LANG_PROGRAM([[
+ #include <stdlib.h>
+ #include <errno.h>
++#include <unistd.h>
+ 		]], [[
+ 	errno=0;
+ 	setresuid(0,0,0);
+ 	if (errno==ENOSYS)
+ 		exit(1);
+@@ -2174,10 +2175,11 @@ AC_CHECK_FUNCS([setresgid], [
+ 	AC_MSG_CHECKING([if setresgid seems to work])
+ 	AC_RUN_IFELSE(
+ 		[AC_LANG_PROGRAM([[
+ #include <stdlib.h>
+ #include <errno.h>
++#include <unistd.h>
+ 		]], [[
+ 	errno=0;
+ 	setresgid(0,0,0);
+ 	if (errno==ENOSYS)
+ 		exit(1);
+@@ -2357,10 +2359,11 @@ if test ! -z "$check_for_openpty_ctty_bu
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include <sys/fcntl.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
++#include <pty.h>
+ 		]], [[
+ 	pid_t pid;
+ 	int fd, ptyfd, ttyfd, status;
+ 
+ 	pid = fork();
+@@ -4270,10 +4273,11 @@ dnl test snprintf (broken on SCO w/gcc)
+ 		[AC_LANG_SOURCE([[
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #ifdef HAVE_SNPRINTF
++int
+ main()
+ {
+ 	char buf[50];
+ 	char expected_out[50];
+ 	int mazsize = 50 ;
+@@ -4283,15 +4287,15 @@ main()
+ 	long long num = 0x7fffffffffffffffll;
+ #endif
+ 	strcpy(expected_out, "9223372036854775807");
+ 	snprintf(buf, mazsize, "%lld", num);
+ 	if(strcmp(buf, expected_out) != 0)
+-		exit(1);
+-	exit(0);
++		return(1);
++	return(0);
+ }
+ #else
+-main() { exit(0); }
++int main() { return(0); }
+ #endif
+ 		]])], [ true ], [ AC_DEFINE([BROKEN_SNPRINTF]) ],
+ 		AC_MSG_WARN([cross compiling: Assuming working snprintf()])
+ 	)
+ fi
