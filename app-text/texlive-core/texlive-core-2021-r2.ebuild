@@ -75,7 +75,7 @@ for i in ${TL_CORE_EXTRA_SRC_MODULES}; do
 done
 SRC_URI="${SRC_URI} )"
 
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~sparc-solaris ~sparc64-solaris"
+KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~sparc-solaris ~sparc64-solaris"
 IUSE="cjk X doc source tk +luajittex xetex xindy"
 
 TEXMF_PATH=/usr/share/texmf-dist
@@ -96,9 +96,9 @@ COMMON_DEPEND="${MODULAR_X_DEPEND}
 	>=x11-libs/cairo-1.12
 	>=x11-libs/pixman-0.18
 	dev-libs/zziplib:=
-	app-text/libpaper
-	dev-libs/gmp:0
-	dev-libs/mpfr:0=
+	app-text/libpaper:=
+	dev-libs/gmp:=
+	dev-libs/mpfr:=
 	>=dev-libs/ptexenc-1.3.8
 	xetex? (
 		>=app-text/teckit-2.5.3
@@ -270,7 +270,7 @@ src_compile() {
 	cd "${B}" || die
 	# Mimic updmap --syncwithtrees to enable only fonts installed
 	# Code copied from updmap script
-	for i in `egrep '^(Mixed|Kanji)?Map' "texmf-dist/web2c/updmap.cfg" | sed 's@.* @@'`; do
+	for i in `grep -E '^(Mixed|Kanji)?Map' "texmf-dist/web2c/updmap.cfg" | sed 's@.* @@'`; do
 		texlive-common_is_file_present_in_texmf "${i}" || echo "${i}"
 	done > "${T}/updmap_update"
 	{
