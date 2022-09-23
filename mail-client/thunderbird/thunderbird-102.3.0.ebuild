@@ -553,10 +553,6 @@ src_prepare() {
 	einfo "Removing pre-built binaries ..."
 	find "${S}"/third_party -type f \( -name '*.so' -o -name '*.o' \) -print -delete || die
 
-	eapply "${FILESDIR}"/rust-1.63.patch
-
-	# Clearing checksums where we have applied patches
-	moz_clear_vendor_checksums packed_simd_2
 	# Create build dir
 	BUILD_DIR="${WORKDIR}/${PN}_build"
 	mkdir -p "${BUILD_DIR}" || die
