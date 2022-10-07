@@ -12,7 +12,7 @@ PYTHON_REQ_USE="ncurses,sqlite,ssl"
 
 WANT_AUTOCONF="2.1"
 
-VIRTUALX_REQUIRED="pgo"
+VIRTUALX_REQUIRED="manual"
 
 MOZ_ESR=
 
@@ -76,7 +76,6 @@ REQUIRED_USE="debug? ( !system-av1 )
 
 # Firefox-only REQUIRED_USE flags
 REQUIRED_USE+=" || ( X wayland )"
-REQUIRED_USE+=" pgo? ( X )"
 REQUIRED_USE+=" screencast? ( wayland )"
 
 FF_ONLY_DEPEND="!www-client/firefox:0
@@ -117,9 +116,22 @@ BDEPEND="${PYTHON_DEPS}
 		)
 	)
 	amd64? ( >=dev-lang/nasm-2.14 )
-	x86? ( >=dev-lang/nasm-2.14 )"
+	x86? ( >=dev-lang/nasm-2.14 )
+	pgo? (
+		X? (
+			x11-base/xorg-server[xvfb]
+			x11-apps/xhost
+		)
+		wayland? (
+			>=gui-libs/wlroots-0.15.1-r1[tinywl]
+			x11-misc/xkeyboard-config
+		)
+	)"
 COMMON_DEPEND="${FF_ONLY_DEPEND}
-	dev-libs/atk
+	|| (
+		>=app-accessibility/at-spi2-core-2.46.0:2
+		dev-libs/atk
+	)
 	dev-libs/expat
 	dev-libs/glib:2
 	dev-libs/libffi:=
@@ -416,6 +428,27 @@ mozconfig_use_with() {
 	mozconfig_add_options_ac "$(use ${1} && echo +${1} || echo -${1})" "${flag}"
 }
 
+virtwl() {
+	debug-print-function ${FUNCNAME} "$@"
+
+	[[ $# -lt 1 ]] && die "${FUNCNAME} needs at least one argument"
+	[[ -n $XDG_RUNTIME_DIR ]] || die "${FUNCNAME} needs XDG_RUNTIME_DIR to be set; try xdg_environment_reset"
+	tinywl -h >/dev/null || die 'tinywl -h failed'
+
+	# TODO: don't run addpredict in utility function. WLR_RENDERER=pixman doesn't work
+	addpredict /dev/dri
+	local VIRTWL VIRTWL_PID
+	coproc VIRTWL { WLR_BACKENDS=headless exec tinywl -s 'echo $WAYLAND_DISPLAY; read _; kill $PPID'; }
+	local -x WAYLAND_DISPLAY
+	read WAYLAND_DISPLAY <&${VIRTWL[0]}
+
+	debug-print "${FUNCNAME}: $@"
+	"$@"
+
+	[[ -n $VIRTWL_PID ]] || die "tinywl exited unexpectedly"
+	exec {VIRTWL[0]}<&- {VIRTWL[1]}>&-
+}
+
 pkg_pretend() {
 	if [[ ${MERGE_TYPE} != binary ]] ; then
 		if use pgo ; then
@@ -498,7 +531,7 @@ pkg_setup() {
 			addpredict /proc
 
 			# May need a wider addpredict when using wayland+pgo.
-			# addpredict /dev/dri
+			addpredict /dev/dri
 
 			# Allow access to GPU during PGO run
 			local ati_cards mesa_cards nvidia_cards render_cards
@@ -1019,23 +1052,26 @@ src_configure() {
 src_compile() {
 	local virtx_cmd=
 
-	if use pgo ; then
-		virtx_cmd=virtx
-
+	if use pgo; then
 		# Reset and cleanup environment variables used by GNOME/XDG
 		gnome2_environment_reset
 
 		addpredict /root
+
+		if ! use X; then
+			virtx_cmd=virtwl
+		else
+			virtx_cmd=virtx
+		fi
 	fi
 
-	if ! use X && use wayland; then
+	if ! use X; then
 		local -x GDK_BACKEND=wayland
 	else
 		local -x GDK_BACKEND=x11
 	fi
 
-	${virtx_cmd} ./mach build --verbose \
-		|| die
+	${virtx_cmd} ./mach build --verbose || die
 }
 
 src_install() {
