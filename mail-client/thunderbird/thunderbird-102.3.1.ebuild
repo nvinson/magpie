@@ -3,7 +3,7 @@
 
 EAPI=8
 
-FIREFOX_PATCHSET="firefox-102esr-patches-02j.tar.xz"
+FIREFOX_PATCHSET="firefox-102esr-patches-04j.tar.xz"
 
 LLVM_MAX_SLOT=15
 
@@ -57,7 +57,7 @@ SRC_URI="${MOZ_SRC_BASE_URI}/source/${MOZ_P}.source.tar.xz -> ${MOZ_P_DISTFILES}
 DESCRIPTION="Thunderbird Mail Client"
 HOMEPAGE="https://www.thunderbird.net/"
 
-KEYWORDS="~amd64 ~arm64 ~ppc64 ~x86"
+KEYWORDS="amd64 ~arm64 ~ppc64 x86"
 
 SLOT="0"
 LICENSE="MPL-2.0 GPL-2 LGPL-2.1"
@@ -552,14 +552,6 @@ src_prepare() {
 
 	einfo "Removing pre-built binaries ..."
 	find "${S}"/third_party -type f \( -name '*.so' -o -name '*.o' \) -print -delete || die
-
-	eapply "${FILESDIR}"/rust-1.63.patch
-
-	# Clearing checksums where we have applied patches
-	moz_clear_vendor_checksums audioipc
-	moz_clear_vendor_checksums audioipc-client
-	moz_clear_vendor_checksums audioipc-server
-	moz_clear_vendor_checksums packed_simd_2
 
 	# Create build dir
 	BUILD_DIR="${WORKDIR}/${PN}_build"
