@@ -3,7 +3,7 @@
 
 EAPI=8
 
-FIREFOX_PATCHSET="firefox-105-patches-05j.tar.xz"
+FIREFOX_PATCHSET="firefox-106-patches-02j.tar.xz"
 
 LLVM_MAX_SLOT=15
 
@@ -94,7 +94,7 @@ BDEPEND="${PYTHON_DEPS}
 			sys-devel/clang:15
 			sys-devel/llvm:15
 			clang? (
-				=sys-devel/lld-15*
+				sys-devel/lld:15
 				pgo? ( =sys-libs/compiler-rt-sanitizers-15*[profile] )
 			)
 		)
@@ -102,7 +102,7 @@ BDEPEND="${PYTHON_DEPS}
 			sys-devel/clang:14
 			sys-devel/llvm:14
 			clang? (
-				=sys-devel/lld-14*
+				sys-devel/lld:14
 				pgo? ( =sys-libs/compiler-rt-sanitizers-14*[profile] )
 			)
 		)
@@ -110,7 +110,7 @@ BDEPEND="${PYTHON_DEPS}
 			sys-devel/clang:13
 			sys-devel/llvm:13
 			clang? (
-				=sys-devel/lld-13*
+				sys-devel/lld:13
 				pgo? ( =sys-libs/compiler-rt-sanitizers-13*[profile] )
 			)
 		)
@@ -135,8 +135,8 @@ COMMON_DEPEND="${FF_ONLY_DEPEND}
 	dev-libs/expat
 	dev-libs/glib:2
 	dev-libs/libffi:=
-	>=dev-libs/nss-3.82
-	>=dev-libs/nspr-4.34.1
+	>=dev-libs/nss-3.83
+	>=dev-libs/nspr-4.35
 	media-libs/alsa-lib
 	media-libs/fontconfig
 	media-libs/freetype
@@ -648,9 +648,7 @@ src_prepare() {
 	find "${S}"/third_party -type f \( -name '*.so' -o -name '*.o' \) -print -delete || die
 
 	# Clearing checksums where we have applied patches
-	moz_clear_vendor_checksums audioipc
-	moz_clear_vendor_checksums audioipc-client
-	moz_clear_vendor_checksums audioipc-server
+	moz_clear_vendor_checksums bindgen
 
 	# Create build dir
 	BUILD_DIR="${WORKDIR}/${PN}_build"
