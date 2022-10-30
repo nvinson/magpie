@@ -1,5 +1,5 @@
---- a/configure.in
-+++ b/configure.in
+--- a/configure.ac
++++ b/configure.ac
 @@ -468,11 +468,11 @@
  
  AC_DEFUN([AC_CHECK_GCC_ARG],
