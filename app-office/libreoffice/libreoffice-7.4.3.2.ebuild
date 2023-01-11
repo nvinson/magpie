@@ -45,7 +45,7 @@ unset DEV_URI
 # If you want them gone, patches are welcome.
 ADDONS_SRC=(
 	# not packaged in Gentoo
-	"${ADDONS_URI}/dragonbox-1.1.3.tar.gz"
+	"${ADDONS_URI}/dragonbox-1.1.0.tar.gz"
 	# not packaged in Gentoo, https://www.netlib.org/fp/dtoa.c
 	"${ADDONS_URI}/dtoa-20180411.tgz"
 	# not packaged in Gentoo, https://skia.org/
@@ -79,12 +79,6 @@ SRC_URI+=" ${ADDONS_SRC[*]}"
 unset ADDONS_URI
 unset ADDONS_SRC
 
-LICENSE="|| ( LGPL-3 MPL-1.1 )"
-SLOT="0"
-
-#[[ ${MY_PV} == *9999* ]] || \
-#KEYWORDS="~amd64 ~arm ~arm64 ~ppc64 ~x86 ~amd64-linux"
-
 # Extensions that need extra work:
 LO_EXTS="nlpsolver scripting-beanshell scripting-javascript wiki-publisher"
 
@@ -101,6 +95,12 @@ REQUIRED_USE="${PYTHON_REQUIRED_USE}
 	libreoffice_extensions_scripting-javascript? ( java )
 	libreoffice_extensions_wiki-publisher? ( java )
 "
+
+LICENSE="|| ( LGPL-3 MPL-1.1 )"
+SLOT="0"
+
+[[ ${MY_PV} == *9999* ]] || \
+KEYWORDS="~amd64 ~arm ~arm64 ~ppc64 ~x86 ~amd64-linux"
 
 RESTRICT="!test? ( test )"
 
