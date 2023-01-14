@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 inherit flag-o-matic meson-multilib udev python-any-r1
 
 DESCRIPTION="An interface for filesystems implemented in userspace"
@@ -34,7 +34,7 @@ pkg_setup() {
 }
 
 multilib_src_configure() {
-	replace-flags -flto=thin -flto
+	filter-flags -flto*
 	local emesonargs=(
 		$(meson_use test examples)
 		$(meson_use test tests)
