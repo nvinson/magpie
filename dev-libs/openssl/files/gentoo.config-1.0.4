@@ -8,6 +8,7 @@
 # Review the bundled 'config' script to see why kind of targets
 # we can pass to the 'Configure' script.
 
+
 # Testing routines
 if [[ $1 == "test" ]] ; then
 	for c in \
@@ -94,7 +95,7 @@ linux)
 	#	hppa64*)      machine=parisc64;;
 		hppa*)        machine="generic32 -DB_ENDIAN";;
 		i[0-9]86*|\
-		x86_64*:x86)  machine=x86-clang;;
+		x86_64*:x86)  [[ "x$CC" = "xclang" || "x$CC" = "xclang "* ]] && machine=x86-clang || machine=x86;;
 		ia64*)        machine=ia64;;
 		loongarch64*) machine="loongarch64 -DL_ENDIAN" system=linux64;;
 		m68*)         machine="latomic -DB_ENDIAN";;
@@ -123,8 +124,8 @@ linux)
 		sparc*)       machine=sparcv8;;
 		s390x*)       machine=s390x system=linux64;;
 		s390*)        machine="generic32 -DB_ENDIAN";;
-		x86_64*:x32)  machine=x32;;
-		x86_64*)      machine=x86_64;;
+		x86_64*:x32)  [[ "x$CC" = "xclang" || "x$CC" = "xclang "* ]] && machine=x32-clang || machine=x32;;
+		x86_64*)  [[ "x$CC" = "xclang" || "x$CC" = "xclang "* ]] && machine=x86_64-clang || machine=x86_64;;
 	esac
 	;;
 BSD)

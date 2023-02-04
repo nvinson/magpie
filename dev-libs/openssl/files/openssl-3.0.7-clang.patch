@@ -1,0 +1,29 @@
+--- a/Configurations/10-main.conf	2023-02-04 10:17:52.547616464 -0500
++++ b/Configurations/10-main.conf	2023-02-04 10:21:12.230965087 -0500
+@@ -878,10 +878,11 @@ my %targets = (
+     },
+     "linux-x86_64-clang" => {
+         inherit_from     => [ "linux-x86_64" ],
+         CC               => "clang",
+         CXX              => "clang++",
++        ex_libs          => add(threads("-latomic")),
+     },
+     "linux-x32" => {
+         inherit_from     => [ "linux-generic32" ],
+         cflags           => add("-mx32"),
+         cxxflags         => add("-mx32"),
+@@ -889,10 +890,14 @@ my %targets = (
+         bn_ops           => "SIXTY_FOUR_BIT",
+         asm_arch         => 'x86_64',
+         perlasm_scheme   => "elf32",
+         multilib         => "x32",
+     },
++    "linux-x32-clang" => {
++        inherit_from     => [ "linux-x32" ],
++        ex_libs          => add(threads("-latomic")),
++    },
+ 
+     "linux-ia64" => {
+         inherit_from     => [ "linux-generic64" ],
+         bn_ops           => "SIXTY_FOUR_BIT_LONG",
+         asm_arch         => 'ia64',

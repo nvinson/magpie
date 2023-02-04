@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -19,7 +19,7 @@ else
 	SRC_URI="mirror://openssl/source/${MY_P}.tar.gz
 		verify-sig? ( mirror://openssl/source/${MY_P}.tar.gz.asc )"
 	#KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~x86-linux"
-	KEYWORDS="~alpha ~amd64 ~arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~riscv ~s390 ~sparc ~x86"
+	KEYWORDS="~alpha ~amd64 ~arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~ppc ~riscv ~s390 ~sparc ~x86"
 fi
 
 S="${WORKDIR}"/${MY_P}
@@ -30,7 +30,6 @@ IUSE="+asm cpu_flags_x86_sse2 fips ktls rfc3779 sctp static-libs test tls-compre
 RESTRICT="!test? ( test )"
 
 COMMON_DEPEND="
-	>=app-misc/c_rehash-1.7-r1
 	tls-compression? ( >=sys-libs/zlib-1.2.8-r1[static-libs(+)?,${MULTILIB_USEDEP}] )
 "
 BDEPEND="
@@ -53,6 +52,7 @@ MULTILIB_WRAPPED_HEADERS=(
 
 PATCHES=(
 	"${FILESDIR}"/${P}-x509-CVE-2022-3996.patch
+	"${FILESDIR}"/${PN}-3.0.7-clang.patch
 )
 
 pkg_setup() {
@@ -148,24 +148,9 @@ src_prepare() {
 
 	append-flags $(test-flags-CC -Wa,--noexecstack)
 
-	# Prefixify Configure shebang (bug #141906)
-	sed \
-		-e "1s,/usr/bin/env,${BROOT}&," \
-		-i Configure || die
-
-	# Remove test target when FEATURES=test isn't set
-	if ! use test ; then
-		sed \
-			-e '/^$config{dirs}/s@ "test",@@' \
-			-i Configure || die
-	fi
-
 	local sslout=$(./gentoo.config)
 	einfo "Using configuration: ${sslout:-(openssl knows best)}"
-
-	# The config script does stupid stuff to prompt the user. Kill it.
-	sed -i '/stty -icanon min 0 time 50; read waste/d' config || die
-	./config ${sslout} --test-sanity || die "I AM NOT SANE"
+	edo perl Configure ${sslout} --test-sanity
 
 	multilib_copy_sources
 }
@@ -198,8 +183,6 @@ multilib_src_configure() {
 
 	local sslout=$(./gentoo.config)
 	einfo "Using configuration: ${sslout:-(openssl knows best)}"
-	local config="Configure"
-	[[ -z ${sslout} ]] && config="config"
 
 	# https://github.com/openssl/openssl/blob/master/INSTALL.md#enable-and-disable-features
 	local myeconfargs=(
@@ -232,7 +215,7 @@ multilib_src_configure() {
 		threads
 	)
 
-	CFLAGS= LDFLAGS= edo ./${config} "${myeconfargs[@]}"
+	CFLAGS= LDFLAGS= edo perl Configure "${myeconfargs[@]}"
 
 	# Clean out hardcoded flags that openssl uses
 	local DEFAULT_CFLAGS=$(grep ^CFLAGS= Makefile | LC_ALL=C sed \
@@ -337,7 +320,7 @@ multilib_src_install_all() {
 }
 
 pkg_postinst() {
-	ebegin "Running 'c_rehash ${EROOT}${SSL_CNF_DIR}/certs/' to rebuild hashes (bug #333069)"
-	c_rehash "${EROOT}${SSL_CNF_DIR}/certs" >/dev/null
+	ebegin "Running 'openssl rehash ${EROOT}${SSL_CNF_DIR}/certs' to rebuild hashes (bug #333069)"
+	openssl rehash "${EROOT}${SSL_CNF_DIR}/certs"
 	eend $?
 }
