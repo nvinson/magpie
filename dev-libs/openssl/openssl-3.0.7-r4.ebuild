@@ -52,7 +52,6 @@ MULTILIB_WRAPPED_HEADERS=(
 
 PATCHES=(
 	"${FILESDIR}"/${P}-x509-CVE-2022-3996.patch
-	"${FILESDIR}"/${PN}-3.0.7-clang.patch
 )
 
 pkg_setup() {
