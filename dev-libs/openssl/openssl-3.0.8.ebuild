@@ -19,7 +19,7 @@ else
 	SRC_URI="mirror://openssl/source/${MY_P}.tar.gz
 		verify-sig? ( mirror://openssl/source/${MY_P}.tar.gz.asc )"
 	#KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~x86-linux"
-	KEYWORDS="~alpha ~amd64 ~arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~ppc ~riscv ~s390 ~sparc ~x86"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
 fi
 
 S="${WORKDIR}"/${MY_P}
@@ -40,7 +40,7 @@ BDEPEND="
 		sys-devel/bc
 		sys-process/procps
 	)
-	verify-sig? ( >=sec-keys/openpgp-keys-openssl-20221101 )"
+	verify-sig? ( >=sec-keys/openpgp-keys-openssl-20230207 )"
 
 DEPEND="${COMMON_DEPEND}"
 RDEPEND="${COMMON_DEPEND}"
@@ -51,7 +51,7 @@ MULTILIB_WRAPPED_HEADERS=(
 )
 
 PATCHES=(
-	"${FILESDIR}"/${P}-x509-CVE-2022-3996.patch
+	"${FILESDIR}"/openssl-3.0.8-mips-cflags.patch
 )
 
 pkg_setup() {
@@ -102,6 +102,7 @@ src_prepare() {
 	# Make sure we only ever touch Makefile.org and avoid patching a file
 	# that gets blown away anyways by the Configure script in src_configure
 	rm -f Makefile
+
 
 	if ! use vanilla ; then
 		PATCHES+=(
