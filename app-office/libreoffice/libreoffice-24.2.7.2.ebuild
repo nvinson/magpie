@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{10..13} )
 PYTHON_REQ_USE="threads(+),xml(+)"
 
 MY_PV="${PV/_alpha/.alpha}"
@@ -111,7 +111,7 @@ LICENSE="|| ( LGPL-3 MPL-1.1 )"
 SLOT="0"
 
 [[ ${MY_PV} == *9999* ]] || \
-KEYWORDS="amd64 ~arm arm64 ~loong ppc64 ~riscv ~x86 ~amd64-linux"
+KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc64 ~riscv ~x86 ~amd64-linux"
 
 COMMON_DEPEND="${PYTHON_DEPS}
 	app-arch/unzip
@@ -410,7 +410,7 @@ src_prepare() {
 
 	# bug #940119
 	# >=libcxx-19 patch. Based on upstream commit d91ab7de467abea6c01c9dd8473f81ac1f29513c
-	cp "${FILESDIR}/$PN-$PV-0001-There-is-no-std-basic_string-int.patch" \
+	cp "${FILESDIR}/$PN-24.2.6.2-0001-There-is-no-std-basic_string-int.patch" \
 		"$S/external/zxcvbn-c/0001-There-is-no-std-basic_string-int.patch"
 
 	# Don't list pdfimport support in desktop when built with none, bug # 605464
