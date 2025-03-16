@@ -1,0 +1,39 @@
+From ff28c4bb2ff125c80da838f2dad5d473c5ed3fb1 Mon Sep 17 00:00:00 2001
+From: Nicholas Vinson <nvinson234@gmail.com>
+Date: Sun, 16 Mar 2025 15:55:52 -0400
+Subject: [PATCH] Move archive_entry_set_digest() to public API
+
+Moving archive_entry_set_digest() to the public API simplifies porting
+non-archive formats to archive formats while preserving supported
+message digests specifically in cases where recomputing digests is not
+viable.
+---
+ libarchive/archive_entry.h         | 1 +
+ libarchive/archive_entry_private.h | 4 ----
+ 2 files changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/libarchive/archive_entry.h b/libarchive/archive_entry.h
+index fb6c26fac8..5643905977 100644
+--- a/libarchive/archive_entry.h
++++ b/libarchive/archive_entry.h
+@@ -438,6 +438,7 @@ __LA_DECL void archive_entry_copy_mac_metadata(struct archive_entry *, const voi
+ #define ARCHIVE_ENTRY_DIGEST_SHA512           0x00000006
+ 
+ __LA_DECL const unsigned char * archive_entry_digest(struct archive_entry *, int /* type */);
++__LA_DECL int archive_entry_set_digest(struct archive_entry *, int, const unsigned char *);
+ 
+ /*
+  * ACL routines.  This used to simply store and return text-format ACL
+diff --git a/libarchive/archive_entry_private.h b/libarchive/archive_entry_private.h
+index 15f2a8ee28..0c1c9fa4bb 100644
+--- a/libarchive/archive_entry_private.h
++++ b/libarchive/archive_entry_private.h
+@@ -195,8 +195,4 @@ struct archive_entry {
+ 	int ae_symlink_type;
+ };
+ 
+-int
+-archive_entry_set_digest(struct archive_entry *entry, int type,
+-    const unsigned char *digest);
+-
+ #endif /* ARCHIVE_ENTRY_PRIVATE_H_INCLUDED */
